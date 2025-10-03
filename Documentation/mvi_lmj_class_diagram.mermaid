@@ -1,0 +1,305 @@
+classDiagram
+    class Navigator {
+        -currentLocation: Location
+        -destination: Location
+        -activeRoute: Route
+        -isNavigating: boolean
+        +calculateRoute(): Route
+        +updatePosition(loc: Location): void
+        +getDirections(): String
+        +startNavigation(): void
+        +stopNavigation(): void
+    }
+
+    class ObstacleDetector {
+        -camera: CameraDevice
+        -detectionThreshold: double
+        -activeObstacles: List~Obstacle~
+        -isProcessing: boolean
+        +processFrame(frame: Image): void
+        +detectObstacles(): List~Obstacle~
+        +alertUser(obstacle: Obstacle): void
+        +startDetection(): void
+    }
+
+    class LandmarkRecognizer {
+        -landmarkDatabase: Database
+        -recognitionModel: MLModel
+        -currentLandmarks: List~Landmark~
+        -scanRadius: double
+        +scanForLandmarks(location: Location): void
+        +identifyLandmark(image: Image): Landmark
+        +announceLandmark(landmark: Landmark): void
+        +updateLandmarkDB(): void
+    }
+
+    class MapManager {
+        -databaseConnection: SQLiteDB
+        -mapData: Map~String, MapData~
+        -routeCache: Cache~Route~
+        -lastUpdate: DateTime
+        +loadMapData(area: BoundingBox): void
+        +updateRoutes(): void
+        +queryDatabase(sql: String): ResultSet
+        +getNearbyLandmarks(): List~Landmark~
+        +cacheRoute(route: Route): void
+    }
+
+    class VoiceInterface {
+        -microphoneInput: AudioDevice
+        -speechRecognizer: SpeechEngine
+        -commandLibrary: Map~String, Command~
+        -audioLibrary: boolean
+        +listenForCommands(): void
+        +processVoiceInput(audio: String): Command
+        +speakResponse(message: String): void
+        +executeCommand(cmd: Command): void
+    }
+
+    class Patient {
+        -userId: String
+        -preferences: UserPreferences
+        -currentSession: NavigationSession
+        -isActive: boolean
+        +requestNavigation(destination: String): void
+        +adjustSettings(settings: UserPreferences): void
+        +accessEmergencyHelp(): void
+        +startSession(): NavigationSession
+        +endSession(): void
+    }
+
+    class Administrator {
+        -adminId: String
+        -permissions: AdminPermissions
+        -lastLogin: DateTime
+        +loadOfflineMaps(mapData: HospitalMap[]): void
+        +updateLandmarkDatabase(landmarks: Landmark[]): void
+        +monitorSystemPerformance(): SystemReport
+        +generateUsageReports(): UsageReport
+        +manageUserAccounts(users: Patient[]): void
+        +backupSystem(): boolean
+    }
+
+    class Location {
+        -x: double
+        -y: double
+        -floor: int
+        -building: String
+        -timestamp: DateTime
+        +getCoordinates(): Point2D
+        +getDistance(other: Location): double
+        +isValid(): boolean
+        +toString(): String
+    }
+
+    class Route {
+        -routeId: String
+        -waypoints: List~Location~
+        -instructions: List~Instruction~
+        -estimatedTime: int
+        -totalDistance: double
+        +getNextInstruction(): Instruction
+        +calculateDistance(): double
+        +isDestinationReached(current: Location): boolean
+        +addWaypoint(loc: Location): void
+        +optimizeRoute(): void
+    }
+
+    class Obstacle {
+        -obstacleId: String
+        -type: ObstacleType
+        -position: Location
+        -size: Dimensions
+        -severity: SeverityLevel
+        -isMoving: boolean
+        -detectedAt: DateTime
+        +getWarningMessage(): String
+        +isInPath(route: Route): boolean
+        +updatePosition(newPos: Location): void
+    }
+
+    class Landmark {
+        -landmarkId: String
+        -name: String
+        -type: LandmarkType
+        -position: Location
+        -description: String
+        -isAccessible: boolean
+        -floor: int
+        +getAnnouncement(language: String): String
+        +isNearLocation(loc: Location, radius: double): boolean
+        +updateDescription(desc: String): void
+    }
+
+    class HospitalMap {
+        -mapId: String
+        -floor: int
+        -building: String
+        -mapData: byte[]
+        -landmarks: List~Landmark~
+        -lastUpdated: DateTime
+        -version: String
+        +loadMapData(): boolean
+        +findPath(start: Location, end: Location): List~Location~
+        +getAllLandmarks(): List~Landmark~
+        +isPathValid(path: List~Location~): boolean
+        +updateMap(newData: byte[]): void
+    }
+
+    class UserPreferences {
+        -userId: String
+        -language: String
+        -voiceSpeed: double
+        -volume: double
+        -navigationStyle: String
+        -emergencyContact: String
+        -accessibilityOptions: Map~String, Object~
+        +updateSettings(key: String, value: Object): void
+        +getPreference(key: String): Object
+        +resetToDefaults(): void
+        +validateSettings(): boolean
+    }
+
+    class NavigationSession {
+        -sessionId: String
+        -userId: String
+        -startTime: DateTime
+        -endTime: DateTime
+        -currentRoute: Route
+        -sessionData: Map~String, Object~
+        -status: SessionStatus
+        +startSession(user: Patient): void
+        +endSession(): void
+        +logActivity(activity: String): void
+        +getSessionDuration(): long
+        +isActive(): boolean
+    }
+
+    class Command {
+        -commandId: String
+        -commandType: CommandType
+        -parameters: Map~String, Object~
+        -timestamp: DateTime
+        -isExecuted: boolean
+        +execute(): CommandResult
+        +validate(): boolean
+        +getDescription(): String
+        +undo(): boolean
+    }
+
+    class MLModel {
+        -modelId: String
+        -modelFile: String
+        -modelType: ModelType
+        -confidence: double
+        -lastTrained: DateTime
+        -isLoaded: boolean
+        +loadModel(): boolean
+        +predict(input: Object): Prediction
+        +updateModel(trainingData: Dataset): void
+        +getAccuracy(): double
+        +unloadModel(): void
+    }
+
+    class SQLiteDB {
+        -dbPath: String
+        -connection: Connection
+        -isConnected: boolean
+        -version: String
+        +connect(): boolean
+        +disconnect(): void
+        +executeQuery(sql: String): ResultSet
+        +executeUpdate(sql: String): int
+        +beginTransaction(): void
+        +commitTransaction(): void
+        +rollbackTransaction(): void
+    }
+
+    class CameraDevice {
+        -deviceId: String
+        -resolution: Resolution
+        -frameRate: int
+        -isActive: boolean
+        +startCapture(): void
+        +stopCapture(): void
+        +captureFrame(): Image
+        +adjustSettings(settings: CameraSettings): void
+    }
+
+    class AudioDevice {
+        -deviceId: String
+        -sampleRate: int
+        -bitDepth: int
+        -isRecording: boolean
+        +startRecording(): void
+        +stopRecording(): void
+        +playAudio(audio: AudioData): void
+        +getAudioData(): AudioData
+    }
+
+    class SpeechEngine {
+        -engineType: String
+        -language: String
+        -accuracy: double
+        -isInitialized: boolean
+        +initialize(): boolean
+        +speechToText(audio: AudioData): String
+        +textToSpeech(text: String): AudioData
+        +setLanguage(lang: String): void
+    }
+
+    %% Core System Relationships
+    Navigator --> VoiceInterface : contains
+    Navigator --> ObstacleDetector : uses
+    Navigator --> LandmarkRecognizer : uses  
+    Navigator --> MapManager : uses
+    Navigator --> Route : manages
+    Navigator --> Location : tracks
+
+    %% Detection and Recognition
+    ObstacleDetector --> Obstacle : detects
+    ObstacleDetector --> MLModel : uses
+    ObstacleDetector --> CameraDevice : uses
+
+    LandmarkRecognizer --> Landmark : identifies
+    LandmarkRecognizer --> MLModel : uses
+    LandmarkRecognizer --> CameraDevice : uses
+
+    %% Data Management
+    MapManager --> SQLiteDB : uses
+    MapManager --> HospitalMap : manages
+    MapManager --> Route : creates
+    MapManager --> Landmark : stores
+
+    %% Voice Processing
+    VoiceInterface --> AudioDevice : uses
+    VoiceInterface --> SpeechEngine : uses
+    VoiceInterface --> Command : processes
+
+    %% User Interactions
+    Patient --> Navigator : interacts_with
+    Patient --> UserPreferences : has
+    Patient --> NavigationSession : initiates
+
+    Administrator --> MapManager : maintains
+    Administrator --> SQLiteDB : manages
+    Administrator --> HospitalMap : updates
+
+    %% Domain Relationships
+    Route --> Location : contains
+    HospitalMap --> Landmark : contains
+    NavigationSession --> Route : uses
+    NavigationSession --> Patient : belongs_to
+    
+    Obstacle --> Location : positioned_at
+    Landmark --> Location : located_at
+
+    %% Technical Dependencies
+    MLModel --> SQLiteDB : persisted_in
+    CameraDevice --> MLModel : feeds_data_to
+    AudioDevice --> SpeechEngine : provides_input_to
+
+    %% Composition relationships
+    Patient *-- UserPreferences : owns
+    Patient *-- NavigationSession : owns
+    Navigator *-- VoiceInterface : contains

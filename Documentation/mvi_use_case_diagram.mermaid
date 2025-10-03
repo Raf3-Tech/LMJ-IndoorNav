@@ -1,0 +1,72 @@
+graph TB
+    %% Actors
+    User[👤 Visually Impaired User]
+    Staff[👥 Hospital Staff]
+    
+    %% System boundary
+    subgraph "MVI-LMJ Navigation System"
+        %% Primary Use Cases
+        UC1[Detect Obstacles]
+        UC2[Navigate to Destination]
+        UC3[Recognize Landmarks]
+        UC4[Process Voice Commands]
+        UC5[Provide Audio Guidance]
+        UC6[Access Offline Maps]
+        UC7[Adjust Audio Settings]
+        UC8[Recalculate Route]
+        UC9[Announce Location Updates]
+        UC10[Handle Emergency Navigation]
+        
+        %% Extended/Included Use Cases
+        UC11[Initialize Camera]
+        UC12[Process Speech Input]
+        UC13[Generate Speech Output]
+        UC14[Load Map Data]
+        UC15[Update User Position]
+        UC16[Validate Voice Command]
+        UC17[Calculate Optimal Path]
+        UC18[Monitor Deviation]
+        UC19[Provide Haptic Feedback]
+    end
+    
+    %% User interactions
+    User --> UC1
+    User --> UC2
+    User --> UC3
+    User --> UC4
+    User --> UC5
+    User --> UC6
+    User --> UC7
+    User --> UC8
+    User --> UC9
+    User --> UC10
+    
+    %% Staff interactions (setup/maintenance)
+    Staff --> UC14
+    Staff -.-> UC6
+    
+    %% Include relationships
+    UC1 -.->|<<include>>| UC11
+    UC1 -.->|<<include>>| UC15
+    UC2 -.->|<<include>>| UC14
+    UC2 -.->|<<include>>| UC17
+    UC2 -.->|<<include>>| UC15
+    UC4 -.->|<<include>>| UC12
+    UC4 -.->|<<include>>| UC16
+    UC5 -.->|<<include>>| UC13
+    UC8 -.->|<<include>>| UC18
+    UC8 -.->|<<include>>| UC17
+    
+    %% Extend relationships
+    UC2 -.->|<<extend>>| UC8
+    UC2 -.->|<<extend>>| UC19
+    UC5 -.->|<<extend>>| UC19
+    UC10 -.->|<<extend>>| UC2
+    
+    %% Styling
+    classDef actor fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef usecase fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef system fill:#e8f5e8,stroke:#2e7d32,stroke-width:3px
+    
+    class User,Staff actor
+    class UC1,UC2,UC3,UC4,UC5,UC6,UC7,UC8,UC9,UC10,UC11,UC12,UC13,UC14,UC15,UC16,UC17,UC18,UC19 usecase
